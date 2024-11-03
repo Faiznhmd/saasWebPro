@@ -19,7 +19,7 @@ import { getProductCount } from '@/server/db/product';
 import { getProductViewCount } from '@/server/db/productViews';
 import { getUserSubscriptionTier } from '@/server/db/subscription';
 import {
-  createCancelSession,
+  handleCancelSession,
   createCheckoutSession,
   createCustomerPortalSession,
 } from '@/server/actions/stripe';
@@ -132,7 +132,7 @@ function PricingCard({
         <form
           action={
             name === 'Free'
-              ? createCancelSession
+              ? handleCancelSession
               : createCheckoutSession.bind(null, name)
           }
         >
