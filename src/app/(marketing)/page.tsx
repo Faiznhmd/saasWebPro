@@ -165,7 +165,12 @@ export function PricingCard({
 }: (typeof subscriptionTiersInOrder)[number]) {
   const isMostPopular = name === 'Standard';
   return (
-    <Card>
+    <Card
+      className={cn(
+        'relative shadow-none rounded-3xl overflow-hidden ',
+        isMostPopular ? 'border-accent bottom-2' : 'border-none'
+      )}
+    >
       <CardHeader>
         <div className="text-accent font-semibold mb-8">{name} </div>
         <CardTitle className="text-xl font-bold">
