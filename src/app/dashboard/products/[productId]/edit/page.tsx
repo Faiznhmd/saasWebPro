@@ -1,6 +1,5 @@
 import { CountryDiscountsForm } from '@/app/dashboard/_components/form/CountryDiscountsForm';
 import { ProductCustomizationForm } from '@/app/dashboard/_components/form/ProductCustomizationForm';
-
 import { ProductDetailsForm } from '@/app/dashboard/_components/form/ProductDetailsForm';
 import { PageWithBackButton } from '@/app/dashboard/_components/PageWithBackButton';
 import {
@@ -16,7 +15,7 @@ import {
   getProductCustomization,
 } from '@/server/db/product';
 import { canCustomizeBanner, canRemoveBranding } from '@/server/permisson';
-// import { canCustomizeBanner, canRemoveBranding } from '@/server/permisson';
+
 import { auth } from '@clerk/nextjs/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@radix-ui/react-tabs';
 import { notFound } from 'next/navigation';
@@ -132,6 +131,7 @@ async function CustomizationsTab({
   const customization = await getProductCustomization({ productId, userId });
 
   if (customization == null) return notFound();
+  // const canRemove = await canRemoveBranding(userId);
 
   return (
     <Card>

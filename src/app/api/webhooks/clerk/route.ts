@@ -64,9 +64,14 @@ import { WebhookEvent } from '@clerk/nextjs/server';
 import { env } from '@/data/env/server';
 import { UserSubscriptionTable } from '@/drizzle/schema';
 import { db } from '@/drizzle/db';
-import { createUserSubscription } from '@/server/db/subscription';
+import {
+  createUserSubscription,
+  getUserSubscription,
+} from '@/server/db/subscription';
 import { deleteUser } from '@/server/db/users';
+import Stripe from 'stripe';
 
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 export async function POST(req: Request) {
   const headerPayload = headers();
   const svixId = (await headerPayload).get('svix-id');
@@ -111,6 +116,7 @@ export async function POST(req: Request) {
 
   switch (event.type) {
     case 'user.created': {
+      console.log('hi');
       await createUserSubscription({
         clerkUserId: event.data.id,
         tier: 'Free',
@@ -119,12 +125,12 @@ export async function POST(req: Request) {
     }
     case 'user.deleted': {
       if (event.data.id != null) {
-        // const userSubscription = await getUserSubscription(event.data.id);
-        // if (userSubscription?.stripeSubscriptionId != null) {
-        //   await stripe.subscriptions.cancel(
-        //     userSubscription?.stripeSubscriptionId
-        //   );
-        // }
+        const userSubscription = await getUserSubscription(event.data.id);
+        if (userSubscription?.stripeSubscriptionId != null) {
+          await stripe.subscriptions.cancel(
+            userSubscription?.stripeSubscriptionId
+          );
+        }
         await deleteUser(event.data.id);
       }
     }
