@@ -10,36 +10,7 @@ import { PaidTierNames, subscriptionTiers } from '@/data/subscriptonTiers';
 
 const stripe = new Stripe(serverEnv.STRIPE_SECRET_KEY);
 
-// export async function createCancelSession() {
-//   const user = await currentUser();
-//   if (user == null) return { error: true };
-
-//   const subscription = await getUserSubscription(user.id);
-
-//   if (subscription == null) return { error: true };
-
-//   if (
-//     subscription.stripeCustomerId == null ||
-//     subscription.stripeSubscriptionId == null
-//   ) {
-//     return new Response(null, { status: 500 });
-//   }
-
-//   const portalSession = await stripe.billingPortal.sessions.create({
-//     customer: subscription.stripeCustomerId,
-//     return_url: `${clientEnv.NEXT_PUBLIC_SERVER_URL}/dashboard/subscription`,
-//     flow_data: {
-//       type: 'subscription_cancel',
-//       subscription_cancel: {
-//         subscription: subscription.stripeSubscriptionId,
-//       },
-//     },
-//   });
-
-//   redirect(portalSession.url);
-// }
-
-export async function handleCancelSession() {
+export async function createCancelSession() {
   const user = await currentUser();
   if (user == null) return { error: true };
 
@@ -51,7 +22,7 @@ export async function handleCancelSession() {
     subscription.stripeCustomerId == null ||
     subscription.stripeSubscriptionId == null
   ) {
-    return { error: true };
+    return new Response(null, { status: 500 });
   }
 
   const portalSession = await stripe.billingPortal.sessions.create({
@@ -65,7 +36,7 @@ export async function handleCancelSession() {
     },
   });
 
-  window.location.href = portalSession.url;
+  redirect(portalSession.url);
 }
 
 export async function createCustomerPortalSession() {
